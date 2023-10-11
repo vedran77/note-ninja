@@ -11,7 +11,6 @@ class Message extends Event implements IEvent {
 		signale.success("New message received! 🤖");
 
 		if (message.content.startsWith(process.env.PREFIX)) {
-			console.log("asd", message.content);
 			Command.callCommand(message, message.content);
 		}
 	}
