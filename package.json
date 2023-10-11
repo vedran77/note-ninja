@@ -1,0 +1,23 @@
+{
+  "name": "note-ninja",
+  "version": "1.0.0",
+  "description": "Cool music bot for discord.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:dev": "tsc && node release/index.js"
+  },
+  "author": "Vedran",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1",
+    "lodash": "^4.17.21",
+    "signale": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/lodash": "^4.14.199",
+    "@types/signale": "^1.4.5"
+  }
+}
