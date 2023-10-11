@@ -10,9 +10,7 @@ class Message extends Event implements IEvent {
 	public async handle(message: DiscordMessage): Promise<void> {
 		signale.success("New message received! 🤖");
 
-		console.log("mc", message.content, process.env.PREFFIX);
-
-		if (message.content.startsWith(process.env.PREFFIX)) {
+		if (message.content.startsWith(process.env.PREFIX)) {
 			console.log("asd", message.content);
 			Command.callCommand(message, message.content);
 		}
