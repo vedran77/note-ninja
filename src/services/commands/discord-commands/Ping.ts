@@ -1,6 +1,5 @@
-import signale from "signale";
-import { CommandArgument, ICommand } from "../ICommand";
 import { Message } from "discord.js";
+import { CommandArgument, ICommand } from "../ICommand";
 
 class Ping implements ICommand {
 	public name: string = "ping";
@@ -10,8 +9,6 @@ class Ping implements ICommand {
 	public fullText: boolean = false;
 
 	public handler(message: Message, fullText: string): void {
-		signale.debug("Pong");
-		message.reply("Pong");
 		message.react("🏓");
 	}
 }

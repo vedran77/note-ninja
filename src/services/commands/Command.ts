@@ -3,7 +3,7 @@ import _ from "lodash";
 import * as commands from "./discord-commands";
 import signale from "signale";
 import { CommandArgument, ICommand } from "./ICommand";
-import { Message } from "discord.js";
+import { Message, Embed } from "discord.js";
 
 class Command {
 	private static _commandList: Map<string, (message: Message, fullText: string, ...args: string[]) => void> =
@@ -32,7 +32,15 @@ class Command {
 				if (!!command.fullText) {
 					if (_.isUndefined(args[0])) {
 						signale.debug(`Client ${message.author.displayName} > Command: ${command.name}.`);
-						message.reply(`${process.env.PREFIX}${command.name} < ${_.get(command, "args.0.name")} >`);
+
+						const embed = {
+							color: 0xff0037,
+							title: "Error",
+							description: `Please provide argument for **${_.get(command, "args[0].name")}**!`,
+						};
+
+						message.reply({ embeds: [embed] });
+						message.react("❌");
 						return;
 					}
 					command.handler(message, fullText, ...args);
@@ -40,15 +48,25 @@ class Command {
 					const commandArgs: Array<number | string> = [];
 					let argsCorrect: boolean = true;
 
-					if (!_.isEmpty(args) && command.args) {
-						if (args.length !== command.args.length) {
+					if (command.args) {
+						if (_.isEmpty(args)) {
 							let args: string = "";
 
 							_.forEach(command.args, (arg) => {
-								args += `< ${arg.name} > `;
+								args += `${arg.name}, `;
 							});
 
-							message.reply(`${process.env.PREFIX}${command.name} ${args}`);
+							// remove last 2 characters from args so we don't have something like 'Param, '
+							args = args.slice(0, -2);
+
+							const embed = {
+								color: 0xff0037,
+								title: "Error",
+								description: `Missing arguments. Required args are: **${args}**!`,
+							};
+
+							message.reply({ embeds: [embed] });
+							message.react("❌");
 							return;
 						}
 
@@ -60,9 +78,14 @@ class Command {
 							if (arg.type === "number") {
 								if (_.isNaN(parsedArg)) {
 									argsCorrect = false;
-									message.reply(
-										`${process.env.PREFIX}${command.name} | Error while parsing argument ${currentArgument}`
-									);
+									const embed = {
+										color: 0xff0037,
+										title: "Error",
+										description: `Argument ${currentArgument} is not a number!`,
+									};
+
+									message.reply({ embeds: [embed] });
+									message.react("❌");
 									return;
 								}
 							}
@@ -70,9 +93,14 @@ class Command {
 							if (arg.type === "string") {
 								if (!_.isNaN(parsedArg)) {
 									argsCorrect = false;
-									message.reply(
-										`${process.env.PREFIX}${command.name} | Error while parsing argument ${currentArgument}`
-									);
+									const embed = {
+										color: 0xff0037,
+										title: "Error",
+										description: `Argument ${currentArgument} is not a string!`,
+									};
+
+									message.reply({ embeds: [embed] });
+									message.react("❌");
 									return;
 								} else {
 									parsedArg = currentArgument;
@@ -81,25 +109,6 @@ class Command {
 
 							commandArgs.push(parsedArg);
 						});
-					}
-
-					// ako nisu argumenti dobri
-					if (!argsCorrect) {
-						if (command.help) {
-							_.forEach(command.help, (help: string) => {
-								message.reply(`[b]${process.env.PREFIX}${command.name} || ${help}`);
-								return;
-							});
-
-							return;
-						}
-
-						message.reply(
-							`[b]${process.env.PREFIX}${command.name} ${_.join(
-								_.map(command.args, (arg: CommandArgument) => `[${arg.name}]`),
-								" "
-							)}`
-						);
 					}
 
 					signale

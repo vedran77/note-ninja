@@ -8,9 +8,8 @@ class Message extends Event implements IEvent {
 	protected _name: string = Events.MessageCreate;
 
 	public async handle(message: DiscordMessage): Promise<void> {
-		signale.success("New message received! 🤖");
-
-		if (message.content.startsWith(process.env.PREFIX)) {
+		if (!message.author.bot && message.content.startsWith(process.env.PREFIX)) {
+			signale.success("New command received! 🤖", message.author.bot);
 			Command.callCommand(message, message.content);
 		}
 	}

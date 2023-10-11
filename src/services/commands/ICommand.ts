@@ -1,3 +1,5 @@
+import { Message } from "discord.js";
+
 type CommandArgument = {
 	name: string;
 	type: "string" | "number";
@@ -8,9 +10,7 @@ interface ICommand {
 	readonly fullText: boolean;
 	readonly aliases?: string[];
 	readonly args?: CommandArgument[];
-	readonly adminCommand?: boolean;
-	readonly help?: string;
-	handler: (user: any, fullText: string, ...args: Array<number | string>) => void;
+	handler: (message: Message, fullText: string, ...args: Array<number | string>) => void;
 }
 
 export { ICommand, CommandArgument };
