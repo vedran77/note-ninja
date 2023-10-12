@@ -1,5 +1,7 @@
 import { Message } from "discord.js";
 import { CommandArgument, ICommand } from "../ICommand";
+import { AudioManager } from "../../services/AudioManager";
+import { ConnectionManager } from "../../services/ConnectionManager";
 
 class Play implements ICommand {
 	public name: string = "play";
@@ -16,7 +18,14 @@ class Play implements ICommand {
 	public fullText: boolean = true;
 
 	public handler(message: Message, fullText: string) {
+		ConnectionManager.instance.setup(
+			message.member.voice.channel.id,
+			message.guild.id,
+			(message.channel as any).guild.voiceAdapterCreator
+		);
+
 		message.react("🎵");
+		AudioManager.instance.play("https://www.youtube.com/watch?v=gPmigNhxAMM");
 	}
 }
 
