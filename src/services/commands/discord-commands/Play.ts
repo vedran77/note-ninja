@@ -18,14 +18,16 @@ class Play implements ICommand {
 	public fullText: boolean = true;
 
 	public handler(message: Message, fullText: string) {
-		ConnectionManager.instance.setup(
-			message.member.voice.channel.id,
-			message.guild.id,
-			(message.channel as any).guild.voiceAdapterCreator
-		);
+		if (!ConnectionManager.instance.exists()) {
+			ConnectionManager.instance.setup(
+				message.member.voice.channel.id,
+				message.guild.id,
+				(message.channel as any).guild.voiceAdapterCreator
+			);
+		}
 
 		message.react("🎵");
-		AudioManager.instance.play("https://www.youtube.com/watch?v=gPmigNhxAMM");
+		AudioManager.instance.play(fullText);
 	}
 }
 

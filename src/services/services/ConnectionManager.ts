@@ -1,4 +1,5 @@
 import { VoiceConnection, joinVoiceChannel } from "@discordjs/voice";
+import { AudioManager } from "./AudioManager";
 
 class ConnectionManager {
 	private static _instance: ConnectionManager;
@@ -11,12 +12,18 @@ class ConnectionManager {
 		return this._instance;
 	}
 
+	public exists(): boolean {
+		return !!this._connection;
+	}
+
 	public setup(channelId: string, guildId: string, adapterCreator: any): void {
 		this._connection = joinVoiceChannel({
 			channelId,
 			guildId,
 			adapterCreator,
 		});
+
+		this._connection.subscribe(AudioManager.instance.player);
 	}
 }
 

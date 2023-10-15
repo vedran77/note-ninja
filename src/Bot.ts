@@ -22,7 +22,7 @@ class Bot {
 
 	public start() {
 		this._client = new Client({
-			intents: ["Guilds", "GuildMessages", "MessageContent", "DirectMessages"],
+			intents: ["Guilds", "GuildMessages", "MessageContent", "GuildVoiceStates"],
 		});
 
 		this._client.login(process.env.BOT_TOKEN);

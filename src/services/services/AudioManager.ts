@@ -1,13 +1,6 @@
-import {
-	AudioPlayer,
-	createAudioResource,
-	joinVoiceChannel,
-	AudioResource,
-	AudioPlayerState,
-	VoiceConnection,
-} from "@discordjs/voice";
-import signale from "signale";
+import { AudioPlayer, AudioPlayerState, AudioResource, createAudioResource } from "@discordjs/voice";
 import play from "play-dl";
+import signale from "signale";
 import { QueueManager } from "./QueueManager";
 
 class AudioManager {
@@ -19,6 +12,10 @@ class AudioManager {
 			this._instance = new AudioManager();
 		}
 		return this._instance;
+	}
+
+	public get player(): AudioPlayer {
+		return this._audioPlayer;
 	}
 
 	constructor() {
