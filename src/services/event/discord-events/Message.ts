@@ -9,7 +9,7 @@ class Message extends Event implements IEvent {
 
 	public async handle(message: DiscordMessage): Promise<void> {
 		if (!message.author.bot && message.content.startsWith(process.env.PREFIX)) {
-			signale.success("New command received! 🤖", message.author.bot);
+			signale.success("New command received! 🤖");
 			Command.callCommand(message, message.content);
 		}
 	}
