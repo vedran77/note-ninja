@@ -1,4 +1,6 @@
 import { AudioManager } from "./AudioManager";
+import { MessageManager } from "./MessageManager";
+import { QueueItem } from "./Types";
 
 class QueueManager {
 	public _queue: QueueItem[] = [];
@@ -15,6 +17,20 @@ class QueueManager {
 	public add(item: QueueItem): void {
 		this._queue.push(item);
 		AudioManager.instance.onSongAdd();
+
+		if (this._queue.length > 0) {
+			MessageManager.instance.sendEmbed({
+				color: 0x206694,
+				thumbnail: { url: item.channel.iconURL({ size: 64 }) },
+				title: item.title,
+				fields: [
+					{
+						name: "** Added  to queue ⌛ **",
+						value: `[${item.title}](${item.url})`,
+					},
+				],
+			});
+		}
 	}
 
 	public remove(item: QueueItem): void {

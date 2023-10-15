@@ -1,7 +1,16 @@
-import { AudioPlayer, AudioPlayerState, AudioResource, createAudioResource } from "@discordjs/voice";
+import {
+	AudioPlayer,
+	AudioPlayerState,
+	AudioResource,
+	NoSubscriberBehavior,
+	createAudioResource,
+} from "@discordjs/voice";
 import play from "play-dl";
 import signale from "signale";
 import { QueueManager } from "./QueueManager";
+import { QueueItem } from "./Types";
+import { ConnectionManager } from "./ConnectionManager";
+import { MessageManager } from "./MessageManager";
 
 class AudioManager {
 	private static _instance: AudioManager;
@@ -19,7 +28,12 @@ class AudioManager {
 	}
 
 	constructor() {
-		this._audioPlayer = new AudioPlayer();
+		this._audioPlayer = new AudioPlayer({
+			behaviors: {
+				noSubscriber: NoSubscriberBehavior.Play,
+			},
+		});
+
 		this._audioPlayer.on("error", (error) => {
 			signale.error("Audio Player Error: ", error);
 		});
@@ -29,11 +43,12 @@ class AudioManager {
 				this._audioPlayer.stop();
 
 				const nextTrack: QueueItem = QueueManager.instance.playNext();
+
 				if (nextTrack === null) {
 					return;
 				}
 
-				this.play(nextTrack.url);
+				this.play(nextTrack);
 			}
 		});
 	}
@@ -45,17 +60,45 @@ class AudioManager {
 				return;
 			}
 
-			this.play(nextTrack.url);
+			this.play(nextTrack);
 		}
 	}
 
-	public async play(url: string): Promise<void> {
-		const data = await play.stream(url);
+	public async play(item: QueueItem): Promise<void> {
+		const data = await play.stream(item.url);
 		const resource: AudioResource = createAudioResource(data.stream, {
 			inputType: data.type,
 		});
 
 		this._audioPlayer.play(resource);
+
+		MessageManager.instance.sendEmbed({
+			color: 0x206694,
+			thumbnail: { url: item.channel.iconURL({ size: 64 }) },
+			image: { url: item.thumbnail },
+			title: item.title,
+			fields: [
+				{
+					name: "** Now playing 🎧 **",
+					value: `🎸 [${item.title}](${item.url})`,
+				},
+				{
+					name: "** Channel 🎷 **",
+					value: `[${item.channel.name}](${item.channel.url})`,
+					inline: true,
+				},
+				{
+					name: "** Views 👀 **",
+					value: `${item.views}`,
+					inline: true,
+				},
+				{
+					name: "** Duration ⏱ **",
+					value: `${item.duration}`,
+					inline: true,
+				},
+			],
+		});
 	}
 }
 
