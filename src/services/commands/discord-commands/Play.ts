@@ -1,10 +1,9 @@
 import { Message } from "discord.js";
-import { CommandArgument, ICommand } from "../ICommand";
-import { AudioManager } from "../../services/AudioManager";
-import { ConnectionManager } from "../../services/ConnectionManager";
-import { QueueManager } from "../../services/QueueManager";
 import play from "play-dl";
+import { ConnectionManager } from "../../services/ConnectionManager";
 import { MessageManager } from "../../services/MessageManager";
+import { QueueManager } from "../../services/QueueManager";
+import { CommandArgument, ICommand } from "../ICommand";
 
 class Play implements ICommand {
 	public name: string = "play";
@@ -19,6 +18,8 @@ class Play implements ICommand {
 	];
 
 	public fullText: boolean = true;
+
+	public needsToBeInVoice?: boolean = true;
 
 	public async handler(message: Message, query: string): Promise<void> {
 		if (!ConnectionManager.instance.exists()) {

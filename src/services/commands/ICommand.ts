@@ -9,6 +9,7 @@ interface ICommand {
 	readonly name: string;
 	readonly fullText: boolean;
 	readonly aliases?: string[];
+	readonly needsToBeInVoice?: boolean;
 	readonly args?: CommandArgument[];
 	handler: (message: Message, fullText: string, ...args: Array<number | string>) => void;
 }

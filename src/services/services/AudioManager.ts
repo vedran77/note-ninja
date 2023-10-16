@@ -64,6 +64,16 @@ class AudioManager {
 		}
 	}
 
+	public async skip(): Promise<void> {
+		const nextTrack: QueueItem = QueueManager.instance.playNext();
+		this._audioPlayer.stop();
+		if (nextTrack === null) {
+			return;
+		}
+
+		this.play(nextTrack);
+	}
+
 	public async play(item: QueueItem): Promise<void> {
 		const data = await play.stream(item.url);
 		const resource: AudioResource = createAudioResource(data.stream, {

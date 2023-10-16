@@ -29,6 +29,13 @@ class Command {
 				fullText: string,
 				...args: string[]
 			) => {
+				if (!!command.needsToBeInVoice) {
+					if (!message.member.voice.channel) {
+						message.reply("Please join a voice channel!");
+						signale.debug(`Client ${message.author.displayName} > Command: ${command.name}.`);
+						return;
+					}
+				}
 				if (!!command.fullText) {
 					if (_.isUndefined(args[0])) {
 						signale.debug(`Client ${message.author.displayName} > Command: ${command.name}.`);
@@ -46,7 +53,6 @@ class Command {
 					command.handler(message, fullText, ...args);
 				} else {
 					const commandArgs: Array<number | string> = [];
-					let argsCorrect: boolean = true;
 
 					if (command.args) {
 						if (_.isEmpty(args)) {
@@ -77,7 +83,6 @@ class Command {
 
 							if (arg.type === "number") {
 								if (_.isNaN(parsedArg)) {
-									argsCorrect = false;
 									const embed = {
 										color: 0xff0037,
 										title: "Error",
@@ -92,7 +97,6 @@ class Command {
 
 							if (arg.type === "string") {
 								if (!_.isNaN(parsedArg)) {
-									argsCorrect = false;
 									const embed = {
 										color: 0xff0037,
 										title: "Error",
