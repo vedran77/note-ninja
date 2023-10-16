@@ -1,9 +1,9 @@
 import _ from "lodash";
 
-import * as commands from "./discord-commands";
+import { Message } from "discord.js";
 import signale from "signale";
 import { CommandArgument, ICommand } from "./ICommand";
-import { Message, Embed } from "discord.js";
+import * as commands from "./discord-commands";
 
 class Command {
 	private static _commandList: Map<string, (message: Message, fullText: string, ...args: string[]) => void> =

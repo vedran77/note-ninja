@@ -15,6 +15,10 @@ class QueueManager {
 		return this._instance;
 	}
 
+	public get length(): number {
+		return this._queue.length;
+	}
+
 	public async sendQueue(message: Message): Promise<void> {
 		if (!this._queue.length) {
 			message.channel.send({
