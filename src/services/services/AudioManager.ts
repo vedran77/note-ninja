@@ -65,13 +65,7 @@ class AudioManager {
 	}
 
 	public skip(): void {
-		const nextTrack: QueueItem = QueueManager.instance.playNext();
 		this._audioPlayer.stop();
-		if (nextTrack === null) {
-			return;
-		}
-
-		this.play(nextTrack);
 	}
 
 	public pause(): void {
