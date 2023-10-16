@@ -64,7 +64,7 @@ class AudioManager {
 		}
 	}
 
-	public async skip(): Promise<void> {
+	public skip(): void {
 		const nextTrack: QueueItem = QueueManager.instance.playNext();
 		this._audioPlayer.stop();
 		if (nextTrack === null) {
@@ -72,6 +72,10 @@ class AudioManager {
 		}
 
 		this.play(nextTrack);
+	}
+
+	public pause(): void {
+		this._audioPlayer.pause();
 	}
 
 	public async play(item: QueueItem): Promise<void> {
