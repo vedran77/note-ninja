@@ -90,6 +90,8 @@ class QueueManager {
 					},
 				],
 			});
+
+			return;
 		}
 
 		this._queue = [];
