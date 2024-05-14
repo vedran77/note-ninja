@@ -72,6 +72,10 @@ class AudioManager {
 		this._audioPlayer.pause();
 	}
 
+	public resume(): void {
+		this._audioPlayer.unpause();
+	}
+
 	public async play(item: QueueItem): Promise<void> {
 		const data = await play.stream(item.url);
 		const resource: AudioResource = createAudioResource(data.stream, {

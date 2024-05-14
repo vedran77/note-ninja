@@ -5,8 +5,6 @@ import { AudioManager } from "../../services/AudioManager";
 class Pause implements ICommand {
 	public name: string = "pause";
 
-	public args: CommandArgument[] = [];
-
 	public fullText: boolean = false;
 
 	public handler(message: Message, fullText: string): void {
