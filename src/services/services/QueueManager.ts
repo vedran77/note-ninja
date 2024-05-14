@@ -79,6 +79,24 @@ class QueueManager {
 
 		return this._queue.shift();
 	}
+
+	public clearQueue(message: Message): void {
+		if (!this._queue.length) {
+			message.channel.send({
+				embeds: [
+					{
+						color: 0x206694,
+						title: "Nothing in the queue",
+					},
+				],
+			});
+
+			return;
+		}
+
+		this._queue = [];
+		message.react("🚮");
+	}
 }
 
 export { QueueManager };
