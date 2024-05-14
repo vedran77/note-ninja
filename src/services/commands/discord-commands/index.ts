@@ -2,5 +2,6 @@ export { Ping } from "./Ping";
 export { Play } from "./Play";
 export { Skip } from "./Skip";
 export { Pause } from "./Pause";
+export { Resume } from "./Resume";
 export { Queue } from "./Queue";
 export { Remove } from "./Remove";
