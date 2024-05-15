@@ -6,6 +6,8 @@ import { QueueItem } from "./Types";
 class QueueManager {
 	public _queue: QueueItem[] = [];
 
+	public _onRepeat: boolean = false;
+
 	private static _instance: QueueManager;
 
 	public static get instance(): QueueManager {
@@ -72,9 +74,46 @@ class QueueManager {
 		this._queue.filter((element) => element !== item);
 	}
 
+	public repeat(message: Message): void {
+		this._onRepeat = !this._onRepeat;
+
+		if (this._onRepeat) {
+			const fields = this._queue.map((item, index) => ({
+				name: `${index + 1}) **${item.title}**`,
+				value: "",
+			}));
+
+			message.channel.send({
+				embeds: [
+					{
+						color: 0x206694,
+						title: "Repeating this playlist",
+						fields,
+					},
+				],
+			});
+		} else {
+			message.channel.send({
+				embeds: [
+					{
+						color: 0x206694,
+						title: "Repeating stopped, playlist will go on without repeating songs.",
+					},
+				],
+			});
+		}
+	}
+
 	public playNext(): QueueItem | null {
 		if (this._queue.length === 0) {
 			return null;
+		}
+
+		if (this._onRepeat) {
+			const nextSong = this._queue.shift();
+			this._queue.push(nextSong);
+
+			return nextSong;
 		}
 
 		return this._queue.shift();
