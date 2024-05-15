@@ -7,8 +7,9 @@ class ClearQueue implements ICommand {
 
 	public fullText: boolean = false;
 
-	public async handler(message: Message): Promise<void> {
+	public aliases?: string[] = ["clear"];
 
+	public async handler(message: Message): Promise<void> {
 		await QueueManager.instance.clearQueue(message);
 	}
 }
