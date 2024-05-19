@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { CommandArgument, ICommand } from "../ICommand";
+import { ICommand } from "../ICommand";
 import { AudioManager } from "../../services/AudioManager";
 
 class Resume implements ICommand {
@@ -8,6 +8,19 @@ class Resume implements ICommand {
 	public fullText: boolean = false;
 
 	public handler(message: Message): void {
+		if (!AudioManager.instance.isStopped) {
+			const embed = {
+				color: 0xff0037,
+				title: "Error",
+				description: `The song is not stopped.`,
+			};
+
+			message.reply({ embeds: [embed] });
+			message.react("❌");
+
+			return;
+		}
+
 		message.react("▶️");
 		AudioManager.instance.resume();
 	}

@@ -8,6 +8,12 @@ class Pause implements ICommand {
 	public fullText: boolean = false;
 
 	public handler(message: Message, fullText: string): void {
+		if (AudioManager.instance.isStopped) {
+			message.react("▶️");
+			AudioManager.instance.resume();
+			return;
+		}
+
 		message.react("⏸️");
 		AudioManager.instance.pause();
 	}

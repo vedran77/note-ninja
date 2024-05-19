@@ -16,6 +16,8 @@ class AudioManager {
 	private static _instance: AudioManager;
 	private _audioPlayer: AudioPlayer;
 
+	public isStopped: boolean = false;
+
 	public static get instance(): AudioManager {
 		if (!this._instance) {
 			this._instance = new AudioManager();
@@ -69,10 +71,12 @@ class AudioManager {
 	}
 
 	public pause(): void {
+		this.isStopped = true;
 		this._audioPlayer.pause();
 	}
 
 	public resume(): void {
+		this.isStopped = false;
 		this._audioPlayer.unpause();
 	}
 
