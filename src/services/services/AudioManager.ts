@@ -5,17 +5,19 @@ import {
 	NoSubscriberBehavior,
 	createAudioResource,
 } from "@discordjs/voice";
+import { Message } from "discord.js";
 import play from "play-dl";
 import signale from "signale";
 import { QueueManager } from "./QueueManager";
 import { QueueItem } from "./Types";
-import { ConnectionManager } from "./ConnectionManager";
 import { MessageManager } from "./MessageManager";
+import { nothingIsPlaying, playEmbedMessage, seekTimeGreaterThanSong } from "../constants/errorMessages";
 
 class AudioManager {
 	private static _instance: AudioManager;
 	private _audioPlayer: AudioPlayer;
 
+	public nowPlaying: QueueItem = null;
 	public isStopped: boolean = false;
 
 	public static get instance(): AudioManager {
@@ -80,41 +82,42 @@ class AudioManager {
 		this._audioPlayer.unpause();
 	}
 
-	public async play(item: QueueItem): Promise<void> {
-		const data = await play.stream(item.url);
+	public seek(time: number, message: Message): void {
+		if (this._audioPlayer.state.status === "idle") {
+			message.reply({ embeds: [nothingIsPlaying] });
+			message.react("❌");
+
+			return;
+		}
+
+		const resourceTimeInSeconds: number = +this.nowPlaying.duration
+			.split(":")
+			.reduce((acc, seekTime) => String(60 * Number(acc) + +Number(seekTime)));
+
+		// For some odd reason discord cannot seek to last 2 seconds of the audio resource
+		if (time > resourceTimeInSeconds - 2) {
+			message.reply({ embeds: [seekTimeGreaterThanSong(resourceTimeInSeconds)] });
+			message.react("❌");
+			return;
+		}
+
+		this.play(this.nowPlaying, time);
+	}
+
+	public async play(item: QueueItem, seek?: number): Promise<void> {
+		const data = await play.stream(item.url, { seek });
 		const resource: AudioResource = createAudioResource(data.stream, {
 			inputType: data.type,
 		});
 
 		this._audioPlayer.play(resource);
+		this.nowPlaying = item;
 
-		MessageManager.instance.sendEmbed({
-			color: 0x206694,
-			thumbnail: { url: item.channel.iconURL({ size: 64 }) },
-			image: { url: item.thumbnail },
-			title: item.title,
-			fields: [
-				{
-					name: "** Now playing 🎧 **",
-					value: `🎸 [${item.title}](${item.url})`,
-				},
-				{
-					name: "** Channel 🎷 **",
-					value: `[${item.channel.name}](${item.channel.url})`,
-					inline: true,
-				},
-				{
-					name: "** Views 👀 **",
-					value: `${item.views}`,
-					inline: true,
-				},
-				{
-					name: "** Duration ⏱ **",
-					value: `${item.duration}`,
-					inline: true,
-				},
-			],
-		});
+		if (seek) {
+			return;
+		}
+
+		MessageManager.instance.sendEmbed(playEmbedMessage(item));
 	}
 }
 

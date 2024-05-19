@@ -7,3 +7,4 @@ export { Queue } from "./Queue";
 export { Remove } from "./Remove";
 export { ClearQueue } from "./ClearQueue";
 export { RepeatQueue } from "./RepeatQueue";
+export { Seek } from "./Seek";
