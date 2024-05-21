@@ -27,6 +27,7 @@ class ConnectionManager {
 	}
 
 	public disconnect(): void {
+		this._connection.disconnect();
 		this._connection.destroy();
 		this._connection = null;
 	}
