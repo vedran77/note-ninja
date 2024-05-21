@@ -25,6 +25,11 @@ class ConnectionManager {
 
 		this._connection.subscribe(AudioManager.instance.player);
 	}
+
+	public disconnect(): void {
+		this._connection.destroy();
+		this._connection = null;
+	}
 }
 
 export { ConnectionManager };

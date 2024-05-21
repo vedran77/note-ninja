@@ -8,3 +8,5 @@ export { Remove } from "./Remove";
 export { ClearQueue } from "./ClearQueue";
 export { RepeatQueue } from "./RepeatQueue";
 export { Seek } from "./Seek";
+export { Disconnect } from "./Disconnect";
+export { Join } from "./Join";
